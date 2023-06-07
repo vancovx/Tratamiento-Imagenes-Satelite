@@ -1,5 +1,5 @@
 ---
-title: "Introducción al Tratamiento de Imagenes Satélite"
+title: "Introducción al Tratamiento de Imágenes Satélite"
 author: "Vanessa Covrig Covrig y Estrella Dominguez Sanchez"
 date: ''
 output:
@@ -77,13 +77,74 @@ El paquete getlandsat nos facilita el acceso a las imágenes Landsat 8 (Las imá
 Hemos decidido usar el paquete Sen2r debido a su facilidad de manejo, ya que dispone de una interfaz, la cual se puede configurar dependiendo de las intenciones de cada usuario, además de un procesamiento integrado el cual nos facilita el preprocesamiento de las imagénes satélite.
 
 ## Primeros pasos con Sen2r
-Primero necesitaremos registrarnos en esta página para poder acceder a las imágenes satélite y a las funciones del paquete:   https://scihub.copernicus.eu/dhus/#/home
+Primero necesitaremos registrarnos en esta página para poder acceder a las imágenes satélite y a las funciones del paquete: https://scihub.copernicus.eu/dhus/#/home
 
-Después de registrarnos ejecutaremos el paquete Sen2r e iniciaremos sesión con las credenciales anteriores (nosotras hemos ejecutado nuestras creedenciales)
+Después de registrarnos ejecutaremos el paquete Sen2r junto a unas librerias necesarias para su correcto funcionamiento e iniciaremos sesión con las credenciales anteriores.
 
-```{r}
+```{r eval = FALSE}
 library(sen2r())
 write_scihub_login(username = "vancovx", password = "trabajomates")
+
+library(leafpm)
+library(mapedit)
+library(shinyFiles)
+library(shinydashboard)
+library(shinyjs)
+library(shinyWidgets)
+
+```
+## Importación de imágenes
+Para importar las imágenes necesitamos especificar un par de parámetros explicados a continuación: 
+```{r eval = FALSE}
+#Definimos una ventana temporal para buscar entre esas dos fechas
+time_window <- as.Date(c("2020-05-01","2020-05-05"))
+#Definimos la escena en la que vamos a trabajar (El tile); 30TXM es de Zaragoza
+tile = "30TXM"
+#Porcentaje de nubes maximo que aparecera en nuestra imagen
+max_cloud = 20
+
+```
+Después comprobamos el recibimiento de imágenes y descargamos la imagen en un directorio.
+```{r eval = FALSE}
+#Comprobamos que existen imágenes con esas caracteristicas
+list_safe <- s2_list(tile = tile, time_interval = time_window, max_cloud = max_cloud)
+
+#Comprobamos los metadatos que nos devuelve la lista anterior
+safe_getMetadata(list_safe, "sensing_datetime")
+safe_getMetadata(list_safe, "nameinfo")
+
+#Creamos un directorio para descargar ahi la imagen
+path <- "C:/Users/estre/OneDrive/Escritorio/UNI/Mates ii/R/Trabajo/"
+
+#Le añadimos una carpeta nueva a la ruta anterior
+path_save <- paste0(path,"prueba/")
+dir.create(path_save)
+
+#Guardamos la imagen en la ruta creada
+s2_download(list_safe, outdir = path_save)
+
+#Creamos un directorio que contiene todas las carpetas
+dirs <- list.dirs(path = path_save)
+
+#Aplicamos un filtro para que nos seleccione solamente las carpetas que contienen "IMG_DATA", que es la carpeta que contiene todas las imagenes
+dirs <- dirs[grep("IMG_DATA", dirs)]
+
+#Creamos una variable que liste todos los archivos de la carpeta
+v_files <- list.files(dirs[1], full.names = TRUE, recursive = TRUE)
+
+#Accedemos al objeto 2 (empieza desde la posicion 1)
+print(v_files[2])
+
+#Filtramos los archivos para que nos selecciones solamente los que terminan por 20m.jp2
+v_files <- list.files(path = path_save, pattern = "20m.jp2", full.names = TRUE, recursive = TRUE)
+```
+
+```{r eval = FALSE}
+
+
+
+
+
 ```
 
 
@@ -93,79 +154,13 @@ write_scihub_login(username = "vancovx", password = "trabajomates")
 
 
 
-<center>
-
-
-</center>
-
-## Función de coste
-
-La función de coste se encarga de calcular el error provocado entre el valor real y el valor calculado por la red neuronal. 
-
-Cómo calcular error solo pueden haber números positivos, y cuanto más se acerca a 0 es indicador de un mejor funcionamiento de dicha red.
-
-Para cada tipo de red existen unas funciones mejores que otras, por lo que voy a explicar algunas de ellas:
-
-#### Error cuadrático medio
-
-Este tipo de error es el más utilizado para este tipo de problemas de regresión, y al utilizar este error el modelo aprende a predecir la media de la respuesta.
-
-Tenemos que para una cierta observación i el error de esta se calcula como el  valor que se ha predicho menos el valor real todo eso al cuadrado.
-
-<center>
-
-$\displaystyle l^{( i)}( w,b) =\left( Y^{( i)} -y^{( i)}\right)^{2}$
-
-</center>
-
-Pero como en una red tenemos muchas observaciones el error será el sumatorio de todas las observaciones:
-
-<center>
-
-$\displaystyle l( w,b) =\sum\limits _{i=1}^{n}\left( Y^{( i)} -y^{( i)}\right)^{2}$
-
-</center>
-
-#### Log loss
-
-Este tipo de error se utiliza en problemas de clasificación, que utilizan un función de activación la cual devuelve una probabilidad. 
-
-Tenemos dos posibles casos:
-Cuando la clasificación es binaria que utilizaremos:
-
-<center>
-
-$\displaystyle L_{\ l\ og}( Y,P) =-( y\ log( p) +( 1-y) log( 1-p))$
-
-</center>
-
-Y cuando la clasificación cuenta con más de dos clases:
-
-<center>
-
-$\displaystyle L_{log}( Y,P) =\ -\frac{1}{N}\sum _{i=0}^{N-1}\sum _{k=0}^{K-1} y_{i,k} log( p_{i,k})$
-
-</center>
-
-Una vez explicado estos conceptos teóricos voy a proceder a realizar un ejemplo de una red neuronal.
 
 
 
 
-# Ejemplo practico
+
 
 
 
 # Bibliografía
 
-https://programmerclick.com/article/3911149818/
-
-https://rpubs.com/rdelgado/402754
-
-https://scikit-learn.org/stable/modules/model_evaluation.html#log-loss
-
-https://www.analyticsvidhya.com/blog/2020/11/binary-cross-entropy-aka-log-loss-the-cost-function-used-in-logistic-regression/
-
-Redes neuronales con R by Joaquín Amat Rodrigo, available under a Attribution 4.0 International (CC BY 4.0) at https://www.cienciadedatos.net/documentos/68-redes-neuronales-r.html
-
-https://datos.gob.es/es/catalogo/l01080193-precipitaciones-acumuladas-mensuales-de-la-ciudad-de-barcelona-desde-17861
