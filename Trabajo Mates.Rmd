@@ -1,0 +1,171 @@
+---
+title: "Introducción al Tratamiento de Imagenes Satélite"
+author: "Vanessa Covrig Covrig y Estrella Dominguez Sanchez"
+date: ''
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: no
+    theme: yeti
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    df_print: kable
+    latex_engine: xelatex
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+  word_document:
+    toc: yes
+    toc_depth: '3'
+always_allow_html: yes
+---
+<style>
+body h2 {
+  font-size: 20px;
+  color: blue;
+}
+</style>
+
+<style>
+body h1 {
+  font-weight: bold;
+  font-size: 30px;
+  color: ;
+}
+</style>
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.aling="center")
+```
+
+# Introducción a las imágenes Satelitales
+
+## ¿Qué es una imagen satélite?
+
+Las imagenes satélites son fotografias tomadas por satélites artificiales, que muestran la geografia de un territorio específico o el espectro determinado de ondas electromagnéticas.
+
+## ¿Pór que necesitamos procesar las imagenes satelitales?
+
+El propósito del procesamiento digital de imágenes, es el de resaltar elementos que son dificiles de percibir o no se pueden distinguir directamente en una imagen. En el procesamiento digital de imágenes, normalmente se utilizan varias bandas espectrales de un mismo satélite.
+
+
+# Paquetes de R para trabajar con imágenes Satélites
+
+
+## Sen2r
+
+Este paquete de R nos ayuda a descargar Y procesar las imagenes Sentinel-2 (2 satélites                                     multiespectrales de órbita polar, para la monitorización de la Tierra.) 
+
+
+## Getlandsat
+
+El paquete getlandsat nos facilita el acceso a las imágenes Landsat 8 (Las imágenes Landsat 8 obtenidas por el sensor (OLI) y (TIRS) constan de nueve bandas espectrales con una resolución espacial de 30 metros para las bandas de 1-7)
+    
+    
+## MODIS
+    
+  El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de  LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
+
+  
+# Sen2r
+
+Hemos decidido usar el paquete Sen2r debido a su facilidad de manejo, ya que dispone de una interfaz, la cual se puede configurar dependiendo de las intenciones de cada usuario, además de un procesamiento integrado el cual nos facilita el preprocesamiento de las imagénes satélite.
+
+## Primeros pasos con Sen2r
+Primero necesitaremos registrarnos en esta página para poder acceder a las imágenes satélite y a las funciones del paquete:   https://scihub.copernicus.eu/dhus/#/home
+
+Después de registrarnos ejecutaremos el paquete Sen2r e iniciaremos sesión con las credenciales anteriores (nosotras hemos ejecutado nuestras creedenciales)
+
+```{r}
+library(sen2r())
+write_scihub_login(username = "vancovx", password = "trabajomates")
+```
+
+
+
+
+
+
+
+
+<center>
+
+
+</center>
+
+## Función de coste
+
+La función de coste se encarga de calcular el error provocado entre el valor real y el valor calculado por la red neuronal. 
+
+Cómo calcular error solo pueden haber números positivos, y cuanto más se acerca a 0 es indicador de un mejor funcionamiento de dicha red.
+
+Para cada tipo de red existen unas funciones mejores que otras, por lo que voy a explicar algunas de ellas:
+
+#### Error cuadrático medio
+
+Este tipo de error es el más utilizado para este tipo de problemas de regresión, y al utilizar este error el modelo aprende a predecir la media de la respuesta.
+
+Tenemos que para una cierta observación i el error de esta se calcula como el  valor que se ha predicho menos el valor real todo eso al cuadrado.
+
+<center>
+
+$\displaystyle l^{( i)}( w,b) =\left( Y^{( i)} -y^{( i)}\right)^{2}$
+
+</center>
+
+Pero como en una red tenemos muchas observaciones el error será el sumatorio de todas las observaciones:
+
+<center>
+
+$\displaystyle l( w,b) =\sum\limits _{i=1}^{n}\left( Y^{( i)} -y^{( i)}\right)^{2}$
+
+</center>
+
+#### Log loss
+
+Este tipo de error se utiliza en problemas de clasificación, que utilizan un función de activación la cual devuelve una probabilidad. 
+
+Tenemos dos posibles casos:
+Cuando la clasificación es binaria que utilizaremos:
+
+<center>
+
+$\displaystyle L_{\ l\ og}( Y,P) =-( y\ log( p) +( 1-y) log( 1-p))$
+
+</center>
+
+Y cuando la clasificación cuenta con más de dos clases:
+
+<center>
+
+$\displaystyle L_{log}( Y,P) =\ -\frac{1}{N}\sum _{i=0}^{N-1}\sum _{k=0}^{K-1} y_{i,k} log( p_{i,k})$
+
+</center>
+
+Una vez explicado estos conceptos teóricos voy a proceder a realizar un ejemplo de una red neuronal.
+
+
+
+
+# Ejemplo practico
+
+
+
+# Bibliografía
+
+https://programmerclick.com/article/3911149818/
+
+https://rpubs.com/rdelgado/402754
+
+https://scikit-learn.org/stable/modules/model_evaluation.html#log-loss
+
+https://www.analyticsvidhya.com/blog/2020/11/binary-cross-entropy-aka-log-loss-the-cost-function-used-in-logistic-regression/
+
+Redes neuronales con R by Joaquín Amat Rodrigo, available under a Attribution 4.0 International (CC BY 4.0) at https://www.cienciadedatos.net/documentos/68-redes-neuronales-r.html
+
+https://datos.gob.es/es/catalogo/l01080193-precipitaciones-acumuladas-mensuales-de-la-ciudad-de-barcelona-desde-17861
