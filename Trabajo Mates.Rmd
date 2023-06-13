@@ -39,27 +39,42 @@ body h1 {
 
 
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.aling="center")
 ```
 
-# Introducción a las imágenes Satelitales
+# Introducción a las Imágenes Satelitales
 
 ## ¿Qué es una imagen satélite?
 
-Las imagenes satélites son fotografias tomadas por satélites artificiales, que muestran la geografia de un territorio específico o el espectro determinado de ondas electromagnéticas.
+Las imágenes satélites son fotografías tomadas por satélites artificiales, que muestran la geografía de un territorio específico o el espectro determinado de ondas electromagnéticas.
 
-## ¿Pór que necesitamos procesar las imagenes satelitales?
+## ¿Pór que necesitamos procesar las imágenes satelitales?
 
-El propósito del procesamiento digital de imágenes, es el de resaltar elementos que son dificiles de percibir o no se pueden distinguir directamente en una imagen. En el procesamiento digital de imágenes, normalmente se utilizan varias bandas espectrales de un mismo satélite.
+El procesamiento de imágenes implica la manipulación e interpretación de imágenes digitales con la ayuda de un ordenador.
+El propósito del procesamiento digital de imágenes satelitales es muy variado, desde el de resaltar elementos que son difíciles de percibir o no se pueden distinguir directamente en una imagen, ver la superficie terrestre desde decenas de kilometros por encima del mar, hasta crear una variedad de productos, como mapas de uso del suelo, mapas de elevación, mapas de riesgo de inundación...
 
+## Conceptos  y características de imágenes satelitales
+ **Resolución espectral:** Número y ancho de las bandas del espectro electromagnético que el satélite puede    detectar.  <br></br><br> 
+ <center>![Espectro electromagnético](img/bandaesp.png)</center> </br>
+ **Resolución espacial:** Tamaño real de la menor unidad de la imagen que puede ser observada.  
+ **Resolución temporal:** Tiempo que tarda el satélite en volver a tomar una imágenes en la misma posición.  
+ **Proyección y Sistema de Coordenadas:** Es importante saber el sistema de coordenadas que usan las imagenes   satelitales para poder ubicarlas en el espacio.  
+ 
+# Tratamiento de Imágenes Satelitales
+El tratamiento de imágenes satelitales tiene un amplio campo de estudio y trabajo, por lo que solo vamos a tratar estos campos básicos:  
 
-# Paquetes de R para trabajar con imágenes Satélites
+* Paquetes necesarios  
+* Descarga de imágenes satelitales   
+* Cálculo de estadísticas de imágenes  
+* Cálculo de índices aplicados a las imágenes
 
+# Paquetes de R para trabajar con Imágenes Satelitales
 
 ## Sen2r
 
-Este paquete de R nos ayuda a descargar Y procesar las imagenes Sentinel-2 (2 satélites                                     multiespectrales de órbita polar, para la monitorización de la Tierra.) 
+Este paquete de R nos ayuda a descargar y procesar las imagenes Sentinel-2 (2 satélites                 multiespectrales de órbita polar, para la monitorización de la Tierra.) 
 
 
 ## Getlandsat
@@ -69,17 +84,17 @@ El paquete getlandsat nos facilita el acceso a las imágenes Landsat 8 (Las imá
     
 ## MODIS
     
-  El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de  LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
-
+El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de  LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
   
-# Sen2r
+
+# Ejemplo practico con Sen2r
 
 Hemos decidido usar el paquete Sen2r debido a su facilidad de manejo, ya que dispone de una interfaz, la cual se puede configurar dependiendo de las intenciones de cada usuario, además de un procesamiento integrado el cual nos facilita el preprocesamiento de las imagénes satélite.
 
 ## Primeros pasos con Sen2r
 Primero necesitaremos registrarnos en esta página para poder acceder a las imágenes satélite y a las funciones del paquete: https://scihub.copernicus.eu/dhus/#/home
 
-Después de registrarnos ejecutaremos el paquete Sen2r junto a unas librerias necesarias para su correcto funcionamiento e iniciaremos sesión con las credenciales anteriores.
+Después de registrarnos ejecutaremos el paquete Sen2r junto a unas librerias necesarias para su correcto funcionamiento e iniciaremos sesión con las credenciales anteriores que hayamos introducido.
 
 ```{r eval = FALSE}
 library(sen2r())
@@ -105,7 +120,7 @@ max_cloud = 20
 
 ```
 Después comprobamos el recibimiento de imágenes y descargamos la imagen en un directorio.
-```{r eval = FALSE}
+```{r eval = TRUE}
 #Comprobamos que existen imágenes con esas caracteristicas
 list_safe <- s2_list(tile = tile, time_interval = time_window, max_cloud = max_cloud)
 
@@ -114,7 +129,7 @@ safe_getMetadata(list_safe, "sensing_datetime")
 safe_getMetadata(list_safe, "nameinfo")
 
 #Creamos un directorio para descargar ahi la imagen
-path <- "C:/Users/estre/OneDrive/Escritorio/UNI/Mates ii/R/Trabajo/"
+path <- "C:/Users/vanes/OneDrive/Trabajo/"
 
 #Le añadimos una carpeta nueva a la ruta anterior
 path_save <- paste0(path,"prueba/")
@@ -138,8 +153,42 @@ print(v_files[2])
 #Filtramos los archivos para que nos selecciones solamente los que terminan por 20m.jp2
 v_files <- list.files(path = path_save, pattern = "20m.jp2", full.names = TRUE, recursive = TRUE)
 ```
+# 
+
 
 ```{r eval = FALSE}
+#LIBRERIA RASTER
+#instalamos la libreria
+library(sp) #esta es requerida para usar raster
+library(raster)
+
+#COLOREAR IMAGEN EN COLOR VERDADERO
+#elegimos el objeto 12
+plotRGB(stack(v_files[12]), red = 1, green = 2, blue = 3)
+
+#cargamos la banda 2 (azul) desde el archivo
+b02 <- raster(v_files[2])
+plot(b02)
+
+#una vez tenemos cargada la banda:
+#EXPLORAMOS LA INFORMACIÓN DE LA IMAGEN
+
+#accedemos a la proyeccion: obtencion de datos:
+crs(b02) #CRS
+res(b02) #Resolución X - y
+xres(b02) #Resolución X
+yres(b02) #Resolución Y
+ncell(b02) #número de celdas
+dim(b02) #dimensiones
+extent(b02) #Estensión x-y
+
+#guardamos los valores del raster en un objeto
+b02_hist <- getValues(b02)
+head(b02_hist)
+
+#generamos un histograma
+par(mar=c(4,4,4,4))
+hist(b02_hist, breaks=5000, xlim=c(0,3000)) #definimos los margenes e intervalos
 
 
 
