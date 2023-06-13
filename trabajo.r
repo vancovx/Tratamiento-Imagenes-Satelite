@@ -112,7 +112,10 @@ xy_ext <- extent(xmin(b02), xmax(b02), ymin(b02), ymax(b02))
 
 
 
-#CAMBIADOO
+
+#CAMBIADO
+
+
 
 
 
@@ -143,3 +146,60 @@ sen2 <- stack(brick_files)
 #hacemos un crop del stack
 sen2 <- crop(sen2, xy_ext)
 plot(sen2)
+
+#modificamos los nombres de las bandas
+names(sen2) <- c('blue', 'green', 'red', 'RE1', 'RE2', 'RE3', 'SWIR1', 'SWIR2', 'NIR')
+
+#interesante minuto 29
+#Composiciones de color
+plotRGB(sen2, r="red", g="green", b="blue", axes = TRUE, stretch = "lin", main = "True Color")
+plotRGB(sen2, r="NIR", g="red", b="green", axes = TRUE, stretch = "lin", main = "False Color Infrarojo")
+plotRGB(sen2, r="SWIR1", g="NIR", b="red", axes = TRUE, stretch = "lin", main = "SWIR")
+plotRGB(sen2, r="NIR", g="RE3", b="blue", axes = TRUE, stretch = "lin", main = "Vegetación")plotRGB(sen2, r="red", g="green", b="blue", axes = TRUE, stretch = "lin", main = "True Color")
+plotRGB(sen2, r="SWIR2", g="SWIR1", b="blue", axes = TRUE, stretch = "lin", main = "Masas de Agua")
+
+
+#interesante: minuto 38 (crear indices); es lo 4º que dice ChatGPT que podemos hacer
+
+
+
+
+
+
+
+######### INCISO #########
+#El profesor nos pide: Instalación de paquetes necesarios para el tratamiento de
+# imágenes en R, la descarga de imágenes de satélite, el cálculo de estadísticas
+# de imágenes y el cálculo de índices aplicados a las imágenes.
+#ChatGPT resume el trabajo en:
+
+  #instalar y cargar los paquetes:
+    #install.packages(c("raster", "rasterVis", "landsat", "MODIS"))
+    #library(raster)
+    #library(rasterVis)
+    #library(landsat)
+    #library(MODIS)
+
+  #Lectura de imágenes:
+    #imagen <- raster("ruta_de_tu_imagen.tif")
+  
+  #Cálculo de estadísticas de imágenes
+    #Valor mínimo
+    #min_value <- minValue(imagen)
+    #Valor máximo
+    #max_value <- maxValue(imagen)
+    #Media
+    #mean_value <- meanValue(imagen)
+    #Desviación estándar
+    #sd_value <- sdValue(imagen)
+  
+  #Cálculo de índices aplicados a las imágenes
+    #Lectura de las bandas roja y cercana al infrarrojo (NIR)
+    #banda_roja <- raster("ruta_de_la_banda_roja.tif")
+    #banda_nir <- raster("ruta_de_la_banda_nir.tif")
+    #Cálculo del NDVI
+    #ndvi <- (banda_nir - banda_roja) / (banda_nir + banda_roja)
+    #Visualización del NDVI
+    #levelplot(ndvi, col.regions = colorRampPalette(c("red", "yellow", "green")))
+
+
