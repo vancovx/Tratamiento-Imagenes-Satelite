@@ -109,15 +109,37 @@ hist(b02_hist, breaks=5000, xlim=c(0,3000)) #definimos los margenes e intervalos
 #obtenemos las coordenadas limites con la funcion extent
 xy_ext <- extent(xmin(b02), xmax(b02), ymin(b02), ymax(b02))
 
+
+
+
+#CAMBIADOO
+
+
+
 #obtenemos un clip del cuadrado central de la imagen
 xmax <- xmax(b02) - ((abs(xmax(b02) - xmin(b02))/2)/2)
 xmin <- xmin(b02) - ((abs(xmax(b02) - xmin(b02))/2)/2)
-ymax <- ymax(b02) - ((abs(xmax(b02) - xmin(b02))/2)/2)
-ymin <- ymin(b02) - ((abs(xmax(b02) - xmin(b02))/2)/2)
+ymax <- ymax(b02) - ((abs(ymax(b02) - ymin(b02))/2)/2)
+ymin <- ymin(b02) - ((abs(ymax(b02) - ymin(b02))/2)/2)
 
 xy_ext <- extent(xmin,xmax,ymin,ymax)
 plot(b02)
 plot(xy_ext, add=TRUE) #cuadro delimitador
 
 
-#MINUTO 25:40
+#Añadimos un crop (un clip/máscara):
+b02_crop <- crop(b02, xy_ext)
+plot(b02_crop)
+
+#filtramos archivos por nombre
+#definimos unas cadenas de texto con las que filtraremos los datos
+patterns <- c("B02", "B03", "B04", "B05", "B06", "B07", "B11", "B12", "B8A")
+#Seleccionamos los archivos de v_files que contienen la cadena anterior
+brick_files <- unique(grep(paste(patterns, collapse = "|"), v_files, value = TRUE))
+
+#creamos con la función stack un archivo multivanda
+sen2 <- stack(brick_files)
+
+#hacemos un crop del stack
+sen2 <- crop(sen2, xy_ext)
+plot(sen2)
