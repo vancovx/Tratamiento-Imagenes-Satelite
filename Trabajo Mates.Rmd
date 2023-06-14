@@ -141,117 +141,196 @@ Primero necesitaremos registrarnos en esta página para poder acceder a las imá
 Después de registrarnos ejecutaremos el paquete Sen2r junto a unas librerias necesarias para su correcto funcionamiento e iniciaremos sesión con las credenciales anteriores que hayamos introducido.
 
 ```{r eval = FALSE}
+#Instalamos la biblioteca sen2r que proporciona herramientas para acceder y 
+#procesar las imágenes satelitales 
 library(sen2r())
+
+#Abrimos la interfaz gráfica de usuario (GUI) que nos permite interactuar con
+#las imágenes y realizar diferentes operaciones
+s2_gui()
+
+#Iniciamos sesion en el portal SciHub, que es una plataforma de datos satelitales
 write_scihub_login(username = "vancovx", password = "trabajomates")
 
+#Instalamos algunos paquetes necesarios
 library(leafpm)
 library(mapedit)
 library(shinyFiles)
 library(shinydashboard)
 library(shinyjs)
 library(shinyWidgets)
-
 ```
-## Importación de imágenes
-Para importar las imágenes necesitamos especificar un par de parámetros explicados a continuación: 
+<center>![](img/sen2r.png){width=40%}</center> </br> 
+  
+## Descarga de Imágenes Satelitales
+Para descargar las imágenes satelitales debemos especificar algunos parámetros y Sen2r trabajará a partir de dichos parámetros, crearemos una carpeta para descargar nuestra imagen y filtraremos solo las imágenes que estén a 20 m.
 ```{r eval = FALSE}
-#Definimos una ventana temporal para buscar entre esas dos fechas
+#Definimos una ventana temporal para buscar dentro de un rango de fechas con la 
+#función as.Date y definiendo un vector de fechas
 time_window <- as.Date(c("2020-05-01","2020-05-05"))
-#Definimos la escena en la que vamos a trabajar (El tile); 30TXM es de Zaragoza
+
+#Definimos la escena en la que vamos a trabajar (el tile o mosaico)
+#en este caso trabajamos con 30TXM que es de Zaragoza
 tile = "30TXM"
-#Porcentaje de nubes maximo que aparecera en nuestra imagen
+
+#Porcentaje de nubes máximo que aparecerá en nuestra imagen
 max_cloud = 20
 
-```
-Después comprobamos el recibimiento de imágenes y descargamos la imagen en un directorio.
-```{r eval = FALSE}
-#Comprobamos que existen imágenes con esas caracteristicas
+#Comprobamos que existen imagenes con esas características usando la función s2_list()
 list_safe <- s2_list(tile = tile, time_interval = time_window, max_cloud = max_cloud)
 
-#Comprobamos los metadatos que nos devuelve la lista anterior
+#Accedemos a los metadatos de las imágenes utilizando safe_getMetadata(),
+#que muestra información como la fecha de captura y los nombres de las imágenes
 safe_getMetadata(list_safe, "sensing_datetime")
 safe_getMetadata(list_safe, "nameinfo")
 
-#Creamos un directorio para descargar ahi la imagen
+#Creamos un directorio para descargar ahí las imágenes
 path <- "C:/Users/vanes/OneDrive/Trabajo/"
 
-#Le añadimos una carpeta nueva a la ruta anterior
+#Creamos un directorio en el que se guardarán las imágenes descargadas
 path_save <- paste0(path,"prueba/")
 dir.create(path_save)
 
-#Guardamos la imagen en la ruta creada
+#Descargamos las imágenes que cumplen con los criterios especificados utilizando
+#se_download() y proporcionando la lista de imágenes obtenida anteiormente
+#y el directorio de destino
 s2_download(list_safe, outdir = path_save)
 
-#Creamos un directorio que contiene todas las carpetas
+#COMPROBAMOS DRECTORIOS
+#creamos un directorio que contiene todas las carpetas
 dirs <- list.dirs(path = path_save)
 
-#Aplicamos un filtro para que nos seleccione solamente las carpetas que contienen "IMG_DATA", que es la carpeta que contiene todas las imagenes
+#Aplicamos un filtro para que nos seleccione solamente las carpetas que contienen
+#"IMG_DATA", que es la carpeta que contiene todas las imágenes
 dirs <- dirs[grep("IMG_DATA", dirs)]
 
 #Creamos una variable que liste todos los archivos de la carpeta
 v_files <- list.files(dirs[1], full.names = TRUE, recursive = TRUE)
 
-#Accedemos al objeto 2 (empieza desde la posicion 1)
+#ACCEDER A OBJETOS
+#Accedemos al objeto 2 (empieza desde la posición 1)
 print(v_files[2])
 
-#Filtramos los archivos para que nos selecciones solamente los que terminan por 20m.jp2
-v_files <- list.files(path = path_save, pattern = "20m.jp2", full.names = TRUE, recursive = TRUE)
+#FILTRACIONES POR PATRON DE TEXTO
+#Filtramos los archivos para que nos selecciones solamente los que terminan por 
+# 20m.jp2 (es decir, las imágenes a 20 metros)
+v_files <- list.files(path = path_save, pattern = "20m.jp2", 
+  full.names = TRUE, recursive = TRUE)
+
 ```
 
+## Cálculo de estadísticas de Imágenes Satelitales
 
 ```{r eval = FALSE}
 #LIBRERIA RASTER
-#instalamos la libreria
-library(sp) #esta es requerida para usar raster
+#Instalamos la libreria
+library(sp) #Esta libreria es requerida para usar raster
 library(raster)
 
-#COLOREAR IMAGEN EN COLOR VERDADERO
-#elegimos el objeto 12
-plotRGB(stack(v_files[12]), red = 1, green = 2, blue = 3)
-
-#cargamos la banda 2 (azul) desde el archivo
-b02 <- raster(v_files[2])
-plot(b02)
-
-#una vez tenemos cargada la banda:
-#EXPLORAMOS LA INFORMACIÓN DE LA IMAGEN
-
-#accedemos a la proyeccion: obtencion de datos:
-crs(b02) #CRS
-res(b02) #Resolución X - y
-xres(b02) #Resolución X
-yres(b02) #Resolución Y
-ncell(b02) #número de celdas
-dim(b02) #dimensiones
-extent(b02) #Estensión x-y
-
-#guardamos los valores del raster en un objeto
-b02_hist <- getValues(b02)
-head(b02_hist)
-
-#generamos un histograma
-par(mar=c(4,4,4,4))
-hist(b02_hist, breaks=5000, xlim=c(0,3000)) #definimos los margenes e intervalos
-
-
-
-
-
+#Elegimos el objeto 12 (imagen en color real)
+plotRGB(stack(v_files[12]))
 ```
 
+<br><center>![Imagen en color real](img/imagen1.png)</center> </br>
+Cargamos la banda 2 (azul) desde el archivo para poder analizar la imagen posteriormente.    
+Para poder analizar correctamente la imagen en banda azul le aplicamos la rasterizacion, lo que nos permitirá analizarla correctamente debido a que la imagen rasterizada es más precisa y detallada.  
 
+```{r eval = FALSE}
+b02 <- raster(v_files[2])
+plot(b02)
+```
+<br><center>![](img/imagen2.png){width=70%}</center> </br>  
 
+Una vez tenemos cargada la banda azul podemos analizar la imágen real con un histrograma:  
+```{r eval = FALSE}
+#Accedemos a la proyeccion: obtencion de datos:
+crs(b02)    #CRS: Coordenadas de la imagen
+res(b02)    #Resolución X - y
+xres(b02)   #Resolución X
+yres(b02)   #Resolución Y
+ncell(b02)  #Número de celdas
+dim(b02)    #Dimensiones
+extent(b02) #Estensión x-y
 
+#Guardamos los valores del raster en un objeto
+b02_hist <- getValues(b02)
+#Mostramos las primeras filas de los valores de píxeles de la banda 2. 
+#Aqui podemos tener una idea de los rangos y distribución de los valores
+head(b02_hist)
 
+#Generamos un histograma
+par(mar=c(4,4,4,4)) #Mostramos los ejes del histrograma
+hist(b02_hist, breaks=5000, xlim=c(0,3000)) #Definimos los margenes e intervalos
+```
+<br><center>![](img/imagen3.png)</center> </br>  
 
+Como podemos observar en el histograma, la mayoría de valores se encuentran entre el 0 y el 750, lo que corresponde con valores más oscuros de la imagen, podemos comprobar en la imagen real que estos valores se cumplen, ya que es una imagen bastante oscura, además  podemos observar que no hay nubes ni grandes masas de agua.  
 
+## Cálculo de índices aplicados a las Imágenes Satelitales
+Filtramos archivos por nombre.  
+Definimos unas cadenas de texto con las que filtraremos los datos.
+```{r eval = FALSE}
+patterns <- c("B02", "B03", "B04", "B05", "B06", "B07", "B11", "B12", "B8A")
+#Seleccionamos los archivos de v_files que contienen la cadena anterior
+brick_files <- unique(grep(paste(patterns, collapse = "|"), v_files, value = TRUE))
 
+#Creamos con la función stack un archivo multivanda
+sen2 <- stack(brick_files)
+```
 
+NDVI: Los colores altos corresponden a zonas de vegetación.  
+```{r eval = FALSE}
+NDVI <- (sen2$NIR - sen2$red) / (sen2$NIR + sen2$red)
+plot(NDVI)
+```
+<br><center>![](img/imagen10.png){width=70%}</center> </br>  
+NDWI: Se utiliza para detectar masas de agua  
+```{r eval = FALSE}
+NDWI <- (sen2$green - sen2$NIR) / (sen2$green + sen2$NIR)
+plot(NDWI)
+```
+<br><center>![](img/imagen11.png){width=70%}</center> </br>  
+NBR: se utiliza para detectar áreas afectadas por incendios
+```{r eval = FALSE}
+NBR <- (sen2$NIR - sen2$SWIR1) / (sen2$NIR + sen2$SWIR1)
+plot(NBR)
+```
+<br><center>![](img/imagen12.png){width=70%}</center> </br>  
+Filtros para los indices:  
+Detectar zonas con un NDWI > 0.3
+```{r eval = FALSE}
+NDWI_filt <- NDWI > 0.3
+plot(NDWI_filt)
 
+```
+<br><center>![](img/imagen13.png){width=70%}</center> </br>  
 
+## Composiciones de color
+```{r eval = FALSE}
+#Modificamos los nombres de las bandas
+names(sen2) <- c('blue', 'green', 'red', 'RE1', 'RE2', 'RE3', 'SWIR1', 'SWIR2', 'NIR')
+plot(sen2)
+```
+<br><center>![](img/imagen4.png){width=70%}</center> </br>  
 
-
-
+```{r eval = FALSE}
+#Composiciones de color
+plotRGB(sen2, r="red", g="green", b="blue", axes = TRUE,
+        stretch = "lin", main = "True Color")
+plotRGB(sen2, r="NIR", g="red", b="green", axes = TRUE,
+        stretch = "lin", main = "False Color Infrarojo")
+plotRGB(sen2, r="SWIR1", g="NIR", b="red", axes = TRUE,
+        stretch = "lin", main = "SWIR")
+plotRGB(sen2, r="NIR", g="RE3", b="blue", axes = TRUE,
+        stretch = "lin", main = "Vegetación")
+plotRGB(sen2, r="SWIR2", g="SWIR1", b="blue", axes = TRUE,
+        stretch = "lin", main = "Masas de Agua")
+```
+<br><center>![](img/imagen5.png){width=70%}</center> </br>  
+<br><center>![](img/imagen6.png){width=70%}</center> </br>  
+<br><center>![](img/imagen7.png){width=70%}</center> </br>  
+<br><center>![](img/imagen8.png){width=70%}</center> </br>  
+<br><center>![](img/imagen9.png){width=70%}</center> </br>  
 
 
 # Bibliografía
