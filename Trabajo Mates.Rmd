@@ -71,21 +71,57 @@ El tratamiento de imágenes satelitales tiene un amplio campo de estudio y traba
 * Cálculo de índices aplicados a las imágenes
 
 # Paquetes de R para trabajar con Imágenes Satelitales
-
 ## Sen2r
 
-Este paquete de R nos ayuda a descargar y procesar las imagenes Sentinel-2 (2 satélites                 multiespectrales de órbita polar, para la monitorización de la Tierra.) 
+Este paquete de R nos ayuda a descargar y procesar las imagenes Sentinel-2 (2 satélites     multiespectrales de órbita polar, para la monitorización de la Tierra.) 
+Para el correcto funcionamiento de este paquete necesitaremos instalar otros paquetes más básicos como "leafpm", "mapedit", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets".
 
+## Raster
+Este paquete nos permite la manipulación y análisis de datos geoespaciales de las imagenes satelitales anteriormente procesadas con Sen2r.
 
-## Getlandsat
+## Otros paquetes
+
+**Getlandsat**  
 
 El paquete getlandsat nos facilita el acceso a las imágenes Landsat 8 (Las imágenes Landsat 8 obtenidas por el sensor (OLI) y (TIRS) constan de nueve bandas espectrales con una resolución espacial de 30 metros para las bandas de 1-7)
     
+**MODIS**    
     
-## MODIS
-    
-El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de  LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
+El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
   
+
+# Descarga de Imágenes Satelitales
+## Sen2r y Copernicus
+Actualmente, existen infinidad de páginas web donde se nos permite obtener imágenes satelitales de forma gratuita como: Google Earth Engine o USGS Earth Explorer (Servicio Geológico de los Estados Unidos) pero Sen2r nos facilita todo este trabajo, permitiéndonos descargar las imágenes que deseemos de Copernicus Open Access Hub, específicamente podemos descargar imágenes del Sentinel-2 que monitorizan la Tierra, Sen2r nos permite especificar la fecha y escena en la que queremos trabajar facilitandonos mucho el trabajo a la hora de descargar las imágenes satelitales.
+
+# Cálculo de estadísticas de Imágenes Satelitales
+Las imágenes satelitales proporcionan una gran cantidad de datos que se pueden utilizar para realizar análisis estadísticos y obtener información valiosa sobre la superficie de la Tierra.  
+Existen varias técnicas estadísticas como:  
+
+* Estadísticas descriptivas  
+* Análisis de histogramas  
+* Análisis de tendencias y cambios  
+* Análisis de correlación  
+* Clasificación y segmentación  
+* Análisis de series temporales  
+
+## Análisis de histogramas en Imágenes Satelitales
+Un histograma es un gráfico en el que se representa una distribución de frecuencias de una variable.  
+Está formado por:   
+  
+* Eje X: Valores de la variable  
+* Eje Y: Frecuencias (veces que aparece el valor)  
+
+Ya que las imágenes satelitales disponen de varias bandas electromagnéticas, al hacer un histograma podemos elegir con cuál trabajar, cada banda nos proporcionara una información distinta sobre la imagen satelital.
+Las bandas comunes utilizadas en las imágenes satelitales son:
+  
+*
+*
+*
+*
+*
+
+
 
 # Ejemplo practico con Sen2r
 
@@ -120,7 +156,7 @@ max_cloud = 20
 
 ```
 Después comprobamos el recibimiento de imágenes y descargamos la imagen en un directorio.
-```{r eval = TRUE}
+```{r eval = FALSE}
 #Comprobamos que existen imágenes con esas caracteristicas
 list_safe <- s2_list(tile = tile, time_interval = time_window, max_cloud = max_cloud)
 
@@ -153,7 +189,6 @@ print(v_files[2])
 #Filtramos los archivos para que nos selecciones solamente los que terminan por 20m.jp2
 v_files <- list.files(path = path_save, pattern = "20m.jp2", full.names = TRUE, recursive = TRUE)
 ```
-# 
 
 
 ```{r eval = FALSE}
