@@ -1,0 +1,361 @@
+---
+title: "Introducción al Tratamiento de Imágenes Satélite"
+author: "Vanessa Covrig Covrig y Estrella Dominguez Sanchez"
+date: ''
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: no
+    theme: yeti
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    df_print: kable
+    latex_engine: xelatex
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+  word_document:
+    toc: yes
+    toc_depth: '3'
+always_allow_html: yes
+---
+<style>
+body h2 {
+  font-size: 20px;
+  color: blue;
+}
+</style>
+
+<style>
+body h1 {
+  font-weight: bold;
+  font-size: 30px;
+  color: ;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.aling="center")
+```
+
+# Introducción a las Imágenes Satelitales
+
+## ¿Qué es una imagen satélite?
+
+Las imágenes satélites son fotografías tomadas por satélites artificiales, que muestran la geografía de un territorio específico o el espectro determinado de ondas electromagnéticas.
+
+## ¿Pór que necesitamos procesar las imágenes satelitales?
+
+El procesamiento de imágenes implica la manipulación e interpretación de imágenes digitales con la ayuda de un ordenador.
+El propósito del procesamiento digital de imágenes satelitales es muy variado, desde el de resaltar elementos que son difíciles de percibir o no se pueden distinguir directamente en una imagen, ver la superficie terrestre desde decenas de kilómetros por encima del mar, hasta crear una variedad de productos, como mapas de uso del suelo, mapas de elevación, mapas de riesgo de inundación...
+
+## Conceptos  y características de imágenes satelitales
+ **Resolución espectral:** Número y ancho de las bandas del espectro electromagnético que el satélite puede    detectar.  <br></br><br> 
+ <center>![Espectro electromagnético](img/bandaesp.png)</center> </br>
+ **Resolución espacial:** Tamaño real de la menor unidad de la imagen que puede ser observada.  
+ **Resolución temporal:** Tiempo que tarda el satélite en volver a tomar una imagen en la misma posición.  
+ **Proyección y Sistema de Coordenadas:** Es importante saber el sistema de coordenadas que usan las imágenes   satelitales para poder ubicarlas en el espacio.   
+ 
+# Tratamiento de Imágenes Satelitales
+El tratamiento de imágenes satelitales tiene un amplio campo de estudio y trabajo, por lo que solo vamos a tratar estos campos básicos:  
+
+* Paquetes necesarios  
+* Descarga de imágenes satelitales   
+* Cálculo de estadísticas de imágenes  
+* Cálculo de índices aplicados a las imágenes
+
+# Paquetes de R para trabajar con Imágenes Satelitales
+## Sen2r
+
+Este paquete de R nos ayuda a descargar y procesar las imágenes Sentinel-2 (2 satélites     multiespectrales de órbita polar, para la monitorización de la Tierra.) 
+Para el correcto funcionamiento de este paquete necesitaremos instalar otros paquetes más básicos como "leafpm", "mapedit", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets".
+
+## Raster
+Este paquete nos permite la manipulación y análisis de datos geoespaciales de las imágenes satelitales anteriormente procesadas con Sen2r.
+
+## Otros paquetes
+
+**Getlandsat**  
+
+El paquete getlandsat nos facilita el acceso a las imágenes Landsat 8 (Las imágenes Landsat 8 obtenidas por el sensor (OLI) y (TIRS) constan de nueve bandas espectrales con una resolución espacial de 30 metros para las bandas de 1-7)
+    
+**MODIS**    
+    
+El paquete MODIS para trabajar con imágenes satélite nos permite procesar y obtener archivos de LP DAAC, LAADS y NSIDC (Moderate-Resolution Imaging Spectroradiometer (MODIS) es un instrumento científico lanzado por la NASA en 1999 a bordo del satélite Terra (EOS AM) y en 2002 a bordo del satélite Aqua. Permite medir la temperatura de la superficie, los sedimentos y fitoplancton del océano...)
+  
+
+# Descarga de Imágenes Satelitales
+## Sen2r y Copernicus
+Actualmente, existen infinidad de páginas web donde se nos permite obtener imágenes satelitales de forma gratuita como: Google Earth Engine o USGS Earth Explorer (Servicio Geológico de los Estados Unidos) pero Sen2r nos facilita todo este trabajo, permitiéndonos descargar las imágenes que deseemos de Copernicus Open Access Hub, específicamente podemos descargar imágenes del Sentinel-2 que monitorizan la Tierra, Sen2r nos permite especificar la fecha y escena en la que queremos trabajar facilitándonos mucho el trabajo a la hora de descargar las imágenes satelitales.
+
+# Cálculo de estadísticas de Imágenes Satelitales
+Las imágenes satelitales proporcionan una gran cantidad de datos que se pueden utilizar para realizar análisis estadísticos y obtener información valiosa sobre la superficie de la Tierra.  
+Existen varias técnicas estadísticas como:  
+
+* Estadísticas descriptivas  
+* Análisis de histogramas  
+* Análisis de tendencias y cambios  
+* Análisis de correlación  
+* Clasificación y segmentación  
+* Análisis de series temporales  
+
+## Análisis de histogramas en Imágenes Satelitales
+Un histograma es un gráfico en el que se representa una distribución de frecuencias de una variable.  
+Está formado por:   
+  
+* Eje X: Valores de la variable  
+* Eje Y: Frecuencias (veces que aparece el valor)  
+
+Ya que las imágenes satelitales disponen de varias bandas electromagnéticas, al hacer un histograma podemos elegir con cuál trabajar, cada banda nos proporcionara una información distinta sobre la imagen satelital.
+Las bandas comunes utilizadas en las imágenes satelitales son:
+  
+**Banda azul:**  Esta banda corresponde a la región del espectro visible (al ojo humano) junto a las bandas verde y roja. Esta banda nos permite distinguir cuerpos de agua, hielo, ciertos tipos de nubes y áreas urbanas, esta banda trabaja con la claridad u oscuridad de las imágenes para identificar los distintos cuerpos mencionados.  
+   
+**Banda verde:** La banda verde es útil para identificar áreas de vegetación, como bosques, cultivos y pastizales. 
+  
+**Banda roja:** La banda roja es útil para evaluar la salud y densidad de la vegetación, así como para distinguir características geológicas.  
+  
+**Banda infrarroja cercana:** La banda infrarroja cercana pertenece al espectro electromagnético no visible junto a la infrarroja de onda corta, esta banda se utiliza para evaluar la salud y vigor de la vegetación, así como para identificar cuerpos de agua y características del suelo.   
+
+# Cálculo de índices aplicados a las Imágenes Satelitales
+El cálculo de índices  es una técnica utilizada para obtener información sobre características o fenómenos de interés en la superficie terrestre. Los índices se calculan utilizando combinaciones de las bandas espectrales de una imagen y se utilizan para cuantificar propiedades como la vegetación, el contenido de agua, la salud de los cultivos, la calidad del suelo y más...  
+Algunos tipos de índices aplicados que vamos a utilizar:   
+
+* NDVI: Contrasta la diferencia entre la banda del rojo y del infrarrojo cercano; puede ofrecer debilidades a la hora de enmascarar superficies relativamente distintas. Los colores altos corresponden a zonas de vegetación.  
+
+* NDWI: Se utiliza para detectar masas de agua.  
+
+* NBR: Se utiliza para detectar áreas afectadas por incendios.  
+
+
+# Ejemplo practico con Sen2r
+
+Hemos decidido usar el paquete Sen2r debido a su facilidad de manejo, ya que dispone de una interfaz, la cual se puede configurar dependiendo de las intenciones de cada usuario, además de un procesamiento integrado, el cual nos facilita el preprocesamiento de las imágenes satélite.
+
+## Primeros pasos con Sen2r
+Primero necesitaremos registrarnos en esta página para poder acceder a las imágenes satélite y a las funciones del paquete: https://scihub.copernicus.eu/dhus/#/home
+
+Después de registrarnos ejecutaremos el paquete Sen2r junto a unas librerías necesarias para su correcto funcionamiento e iniciaremos sesión con las credenciales anteriores que hayamos introducido.
+
+```{r eval = FALSE}
+#Instalamos la biblioteca sen2r que proporciona herramientas para acceder y 
+#procesar las imágenes satelitales 
+library(sen2r())
+
+#Abrimos la interfaz gráfica de usuario (GUI) que nos permite interactuar con
+#las imágenes y realizar diferentes operaciones
+s2_gui()
+
+#Iniciamos sesion en el portal SciHub, que es una plataforma de datos satelitales
+write_scihub_login(username = "vancovx", password = "trabajomates")
+
+#Instalamos algunos paquetes necesarios
+library(leafpm)
+library(mapedit)
+library(shinyFiles)
+library(shinydashboard)
+library(shinyjs)
+library(shinyWidgets)
+```
+<center>![](img/sen2r.png){width=40%}</center> </br> 
+  
+## Descarga de Imágenes Satelitales
+Para descargar las imágenes satelitales debemos especificar algunos parámetros y Sen2r trabajará a partir de dichos parámetros, crearemos una carpeta para descargar nuestra imagen y filtraremos solo las imágenes que estén a 20 m.
+```{r eval = FALSE}
+#Definimos una ventana temporal para buscar dentro de un rango de fechas con la 
+#función as.Date y definiendo un vector de fechas
+time_window <- as.Date(c("2020-05-01","2020-05-05"))
+
+#Definimos la escena en la que vamos a trabajar (el tile o mosaico)
+#en este caso trabajamos con 30TXM que es de Zaragoza
+tile = "30TXM"
+
+#Porcentaje de nubes máximo que aparecerá en nuestra imagen
+max_cloud = 20
+
+#Comprobamos que existen imagenes con esas características usando la función s2_list()
+list_safe <- s2_list(tile = tile, time_interval = time_window, max_cloud = max_cloud)
+
+#Accedemos a los metadatos de las imágenes utilizando safe_getMetadata(),
+#que muestra información como la fecha de captura y los nombres de las imágenes
+safe_getMetadata(list_safe, "sensing_datetime")
+safe_getMetadata(list_safe, "nameinfo")
+
+#Creamos un directorio para descargar ahí las imágenes
+path <- "C:/Users/vanes/OneDrive/Trabajo/"
+
+#Creamos un directorio en el que se guardarán las imágenes descargadas
+path_save <- paste0(path,"prueba/")
+dir.create(path_save)
+
+#Descargamos las imágenes que cumplen con los criterios especificados utilizando
+#se_download() y proporcionando la lista de imágenes obtenida anteiormente
+#y el directorio de destino
+s2_download(list_safe, outdir = path_save)
+
+#COMPROBAMOS DRECTORIOS
+#creamos un directorio que contiene todas las carpetas
+dirs <- list.dirs(path = path_save)
+
+#Aplicamos un filtro para que nos seleccione solamente las carpetas que contienen
+#"IMG_DATA", que es la carpeta que contiene todas las imágenes
+dirs <- dirs[grep("IMG_DATA", dirs)]
+
+#Creamos una variable que liste todos los archivos de la carpeta
+v_files <- list.files(dirs[1], full.names = TRUE, recursive = TRUE)
+
+#ACCEDER A OBJETOS
+#Accedemos al objeto 2 (empieza desde la posición 1)
+print(v_files[2])
+
+#FILTRACIONES POR PATRON DE TEXTO
+#Filtramos los archivos para que nos selecciones solamente los que terminan por 
+# 20m.jp2 (es decir, las imágenes a 20 metros)
+v_files <- list.files(path = path_save, pattern = "20m.jp2", 
+  full.names = TRUE, recursive = TRUE)
+
+```
+
+## Cálculo de estadísticas de Imágenes Satelitales
+
+```{r eval = FALSE}
+#LIBRERIA RASTER
+#Instalamos la libreria
+library(sp) #Esta libreria es requerida para usar raster
+library(raster)
+
+#Elegimos el objeto 12 (imagen en color real)
+plotRGB(stack(v_files[12]))
+```
+
+<br><center>![Imagen en color real](img/imagen1.png)</center> </br>
+Cargamos la banda 2 (azul) desde el archivo para poder analizar la imagen posteriormente.    
+Para poder analizar correctamente la imagen en banda azul le aplicamos la rasterizacion, lo que nos permitirá analizarla correctamente debido a que la imagen rasterizada es más precisa y detallada.  
+
+```{r eval = FALSE}
+b02 <- raster(v_files[2])
+plot(b02)
+```
+<br><center>![](img/imagen2.png){width=70%}</center> </br>  
+
+Una vez tenemos cargada la banda azul podemos analizar la imágen real con un histrograma:  
+```{r eval = FALSE}
+#Accedemos a la proyeccion: obtencion de datos:
+crs(b02)    #CRS: Coordenadas de la imagen
+res(b02)    #Resolución X - y
+xres(b02)   #Resolución X
+yres(b02)   #Resolución Y
+ncell(b02)  #Número de celdas
+dim(b02)    #Dimensiones
+extent(b02) #Estensión x-y
+
+#Guardamos los valores del raster en un objeto
+b02_hist <- getValues(b02)
+#Mostramos las primeras filas de los valores de píxeles de la banda 2. 
+#Aqui podemos tener una idea de los rangos y distribución de los valores
+head(b02_hist)
+
+#Generamos un histograma
+par(mar=c(4,4,4,4)) #Mostramos los ejes del histrograma
+hist(b02_hist, breaks=5000, xlim=c(0,3000)) #Definimos los margenes e intervalos
+```
+<br><center>![](img/imagen3.png)</center> </br>  
+
+Como podemos observar en el histograma, la mayoría de valores se encuentran entre el 0 y el 750, lo que corresponde con valores más oscuros de la imagen, podemos comprobar en la imagen real que estos valores se cumplen, ya que es una imagen bastante oscura, además  podemos observar que no hay nubes ni grandes masas de agua.  
+
+## Cálculo de índices aplicados a las Imágenes Satelitales
+Filtramos archivos por nombre.  
+Definimos unas cadenas de texto con las que filtraremos los datos.
+```{r eval = FALSE}
+patterns <- c("B02", "B03", "B04", "B05", "B06", "B07", "B11", "B12", "B8A")
+#Seleccionamos los archivos de v_files que contienen la cadena anterior
+brick_files <- unique(grep(paste(patterns, collapse = "|"), v_files, value = TRUE))
+
+#Creamos con la función stack un archivo multivanda
+sen2 <- stack(brick_files)
+```
+
+NDVI: Los colores altos corresponden a zonas de vegetación.  
+```{r eval = FALSE}
+NDVI <- (sen2$NIR - sen2$red) / (sen2$NIR + sen2$red)
+plot(NDVI)
+```
+<br><center>![](img/imagen10.png){width=70%}</center> </br>  
+NDWI: Se utiliza para detectar masas de agua  
+```{r eval = FALSE}
+NDWI <- (sen2$green - sen2$NIR) / (sen2$green + sen2$NIR)
+plot(NDWI)
+```
+<br><center>![](img/imagen11.png){width=70%}</center> </br>  
+NBR: se utiliza para detectar áreas afectadas por incendios
+```{r eval = FALSE}
+NBR <- (sen2$NIR - sen2$SWIR1) / (sen2$NIR + sen2$SWIR1)
+plot(NBR)
+```
+<br><center>![](img/imagen12.png){width=70%}</center> </br>  
+Filtros para los indices:  
+Detectar zonas con un NDWI > 0.3
+```{r eval = FALSE}
+NDWI_filt <- NDWI > 0.3
+plot(NDWI_filt)
+
+```
+<br><center>![](img/imagen13.png){width=70%}</center> </br>  
+
+## Composiciones de color
+```{r eval = FALSE}
+#Modificamos los nombres de las bandas
+names(sen2) <- c('blue', 'green', 'red', 'RE1', 'RE2', 'RE3', 'SWIR1', 'SWIR2', 'NIR')
+plot(sen2)
+```
+<br><center>![](img/imagen4.png){width=70%}</center> </br>  
+
+```{r eval = FALSE}
+#Composiciones de color
+plotRGB(sen2, r="red", g="green", b="blue", axes = TRUE,
+        stretch = "lin", main = "True Color")
+plotRGB(sen2, r="NIR", g="red", b="green", axes = TRUE,
+        stretch = "lin", main = "False Color Infrarojo")
+plotRGB(sen2, r="SWIR1", g="NIR", b="red", axes = TRUE,
+        stretch = "lin", main = "SWIR")
+plotRGB(sen2, r="NIR", g="RE3", b="blue", axes = TRUE,
+        stretch = "lin", main = "Vegetación")
+plotRGB(sen2, r="SWIR2", g="SWIR1", b="blue", axes = TRUE,
+        stretch = "lin", main = "Masas de Agua")
+```
+<br><center>![](img/imagen5.png){width=70%}</center> </br>  
+<br><center>![](img/imagen6.png){width=70%}</center> </br>  
+<br><center>![](img/imagen7.png){width=70%}</center> </br>  
+<br><center>![](img/imagen8.png){width=70%}</center> </br>  
+<br><center>![](img/imagen9.png){width=70%}</center> </br>  
+
+
+# Bibliografía
+* Copernicus para el acceso a Sen2r.  
+https://scihub.copernicus.eu/dhus/#/home  
+  
+* Paquetes de R para el procesamiento de imágenes satelitales.  
+https://mappinggis.com/2020/09/paquetes-de-r-para-trabajar-con-imagenes-de-satelite/  
+
+* Histogramas de imágenes digitales.  
+https://riunet.upv.es/bitstream/handle/10251/12711/El_histograma_una_imagen_digital.pdf?sequence=1  
+
+* Banda azul.  
+https://medium.com/punto-focal/descubra-informaci%C3%B3n-valiosa-la-importancia-de-la-banda-azul-en-sensores-multiespectrales-c4a71bff6c68  
+
+* Datos raster.  
+https://desktop.arcgis.com/es/arcmap/latest/manage-data/raster-and-images/what-is-raster-data.htm    
+
+* Índices espectrales en Sentinel-2.  
+https://acolita.com/lista-de-indices-espectrales-en-sentinel-2-y-landsat/  
+
+* Empezando con R en el tratamiento de imágenes satelitales.  
+https://www.youtube.com/watch?v=_WpKVfySinU&t=616s&ab_channel=Geoinnova  
+
+# Aclaración
+El código escrito en el ejemplo práctico está separado en secciones para permitirnos la correcta explicación de dicho código, si queremos que el código funcione correctamente tendremos que ejecutar todo el código junto.
+
+
