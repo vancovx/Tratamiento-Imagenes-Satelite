@@ -37,9 +37,6 @@ body h1 {
 }
 </style>
 
-
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.aling="center")
 ```
@@ -115,12 +112,23 @@ Está formado por:
 Ya que las imágenes satelitales disponen de varias bandas electromagnéticas, al hacer un histograma podemos elegir con cuál trabajar, cada banda nos proporcionara una información distinta sobre la imagen satelital.
 Las bandas comunes utilizadas en las imágenes satelitales son:
   
-*
-*
-*
-*
-*
+**Banda azul:**  Esta banda corresponde a la región del espectro visible (al ojo humano) junto a las bandas verde y roja. Esta banda nos permite distinguir cuerpos de agua, hielo, ciertos tipos de nubes y áreas urbanas, esta banda trabaja con la claridad u oscuridad de las imágenes para identificar los distintos cuerpos mencionados.  
+   
+**Banda verde:** La banda verde es útil para identificar áreas de vegetación, como bosques, cultivos y pastizales. 
+  
+**Banda roja:** La banda roja es útil para evaluar la salud y densidad de la vegetación, así como para distinguir características geológicas.  
+  
+**Banda infrarroja cercana:** La banda infrarroja cercana pertenece al espectro electromagnetico no visible junto a la infrarroja de onda corta, esta banda se utiliza para evaluar la salud y vigor de la vegetación, así como para identificar cuerpos de agua y características del suelo.   
 
+# Cálculo de índices aplicados a las Imágenes Satelitales
+El cálculo de índices  es una técnica utilizada para obtener información sobre características o fenómenos de interés en la superficie terrestre. Los índices se calculan utilizando combinaciones de las bandas espectrales de una imagen y se utilizan para cuantificar propiedades como la vegetación, el contenido de agua, la salud de los cultivos, la calidad del suelo y más...  
+Algunos tipos de índices aplicados que vamos a utilizar:   
+
+* NDVI: Contrasta la diferencia entre la banda del rojo y del infrarrojo cercano; puede ofrecer debilidades a la hora de enmascarar superficies relativamente distintas. Los colores altos corresponden a zonas de vegetación.  
+
+* NDWI: Se utiliza para detectar masas de agua.  
+
+* NBR: Se utiliza para detectar áreas afectadas por incendios.  
 
 
 # Ejemplo practico con Sen2r
