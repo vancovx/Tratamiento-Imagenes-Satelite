@@ -355,7 +355,6 @@ https://acolita.com/lista-de-indices-espectrales-en-sentinel-2-y-landsat/
 * Empezando con R en el tratamiento de imágenes satelitales.  
 https://www.youtube.com/watch?v=_WpKVfySinU&t=616s&ab_channel=Geoinnova  
 
-# Aclaración
-El código escrito en el ejemplo práctico está separado en secciones para permitirnos la correcta explicación de dicho código, si queremos que el código funcione correctamente tendremos que ejecutar todo el código junto.
+
 
 
