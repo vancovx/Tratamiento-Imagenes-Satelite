@@ -83,7 +83,7 @@ library(raster)
 
 #COLOREAR IMAGEN EN COLOR VERDADERO
 #elegimos el objeto 12
-plotRGB(stack(v_files[12]), red = 1, green = 2, blue = 3)
+plotRGB(stack(v_files[12]))
 
 #cargamos la banda 2 (azul) desde el archivo
 b02 <- raster(v_files[2])
@@ -108,25 +108,20 @@ b02_hist <- getValues(b02)
 head(b02_hist)
 
 #generamos un histograma
-
-
-##############ESTO NO SE SI HACE ALGO##################
-
-#par(mar=c(4,4,4,4))
-
-#######################################################
-
+par(mar=c(4,4,4,4)) #con esto añadimos los ejes del histograma
 hist(b02_hist, breaks=5000, xlim=c(0,3000)) #definimos los margenes e intervalos
 
 #filtramos archivos por nombre
 #definimos unas cadenas de texto con las que filtraremos los datos
 patterns <- c("B02", "B03", "B04", "B05", "B06", "B07", "B11", "B12", "B8A")
 #Seleccionamos los archivos de v_files que contienen la cadena anterior
+  #unique(): se aplica al resultado de grep(); elimina duplicados
+  #grep(pattern, x): busca coincidencias del patrón pattern en un vector x
+  #paste(patterns, collapse = "|"): concatena los elementos de patterns separados por "|" 
 brick_files <- unique(grep(paste(patterns, collapse = "|"), v_files, value = TRUE))
 
-#creamos con la función stack un archivo multivanda
+#creamos con la función stack un archivo multibanda
 sen2 <- stack(brick_files)
-plot(sen2)
 
 #modificamos los nombres de las bandas
 names(sen2) <- c('blue', 'green', 'red', 'RE1', 'RE2', 'RE3', 'SWIR1', 'SWIR2', 'NIR')
